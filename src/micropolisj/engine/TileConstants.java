@@ -150,8 +150,8 @@ public class TileConstants
 	static final char VBRDG1 = 949;
 	static final char VBRDG2 = 950;
 	static final char VBRDG3 = 951;
-	static final char NEW_BUILDING = 964; //Tile id for the NEW_BUILDING tile. This is the id of the center of the tile as listed in tiles.rc
-	public static final char LAST_TILE = 968;
+	static final char LEASED_LAND = 969; //Tile id for the NEW_BUILDING tile. This is the id of the center of the tile as listed in tiles.rc
+	public static final char LAST_TILE = 1023;
 
 	static final char [] RoadTable = new char[] {
 		ROADS, ROADS2, ROADS, ROADS3,
