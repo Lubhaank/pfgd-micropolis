@@ -1176,8 +1176,13 @@ public class MainWindow extends JFrame
 			return;
 
 		CityLocation loc = drawingArea.getCityLocation(ev.getX(), ev.getY());
+		
+		
+		
 		int x = loc.x;
 		int y = loc.y;
+		
+		
 
 		if (currentTool == MicropolisTool.QUERY) {
 			doQueryTool(x, y);
@@ -1186,6 +1191,18 @@ public class MainWindow extends JFrame
 		else {
 			this.toolStroke = currentTool.beginStroke(engine, x, y);
 			previewTool();
+			if(currentTool == MicropolisTool.LEASED_LAND) {
+				
+				int cur = engine.LeaseID;
+				
+				LeasedLandEntity l = new LeasedLandEntity(cur, 10000, engine, x,y);
+				
+				for(int id: engine.idToLLEntity.keySet()) {
+					
+					System.out.println(engine.idToLLEntity.get(id).toString());
+				}
+				
+			}
 		}
 
 		this.lastX = x;

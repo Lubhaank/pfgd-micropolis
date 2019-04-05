@@ -114,6 +114,70 @@ public class NotificationPane extends JPanel
 		headerLbl.setText(strings.getString("notification.query_hdr"));
 		headerLbl.setBackground(QUERY_COLOR);
 
+		if(zone.building == 28) {
+			
+			String buildingStr = zone.building != -1 ? s_strings.getString("zone."+zone.building) : "";
+			
+			String IdStr = "zone."+zone.LeaseID;
+			
+			String LoanStr = "zone."+zone.Loan;
+			
+			System.out.println(IdStr);
+			
+			System.out.println(LoanStr);
+			
+			setPicture(engine, xpos, ypos);
+
+			if (infoPane != null) {
+				mainPane.remove(infoPane);
+				infoPane = null;
+			}
+
+			JPanel p = new JPanel(new GridBagLayout());
+			mainPane.add(p, BorderLayout.CENTER);
+			infoPane = p;
+
+			GridBagConstraints c1 = new GridBagConstraints();
+			GridBagConstraints c2 = new GridBagConstraints();
+
+			c1.gridx = 0;
+			c2.gridx = 1;
+			c1.gridy = c2.gridy = 0;
+			c1.anchor = GridBagConstraints.WEST;
+			c2.anchor = GridBagConstraints.WEST;
+			c1.insets = new Insets(0,0,0,8);
+			c2.weightx = 1.0;
+
+			p.add(new JLabel(strings.getString("notification.zone_lbl")), c1);
+			p.add(new JLabel(buildingStr), c2);
+			
+			
+			
+			
+			c1.gridy = ++c2.gridy;
+			
+			p.add(new JLabel("Id of Lease:"), c1);
+			p.add(new JLabel(IdStr), c2);
+			
+			
+			c1.gridy = ++c2.gridy;
+			p.add(new JLabel("Loan left to pay:"), c1);
+			p.add(new JLabel(LoanStr), c2);
+			
+			c1.gridy++;
+			c1.gridwidth = 2;
+			c1.weighty = 1.0;
+			
+			p.add(new JLabel(), c1);
+
+			setVisible(true);
+			
+			return;
+			
+			
+			
+			
+		}
 		String buildingStr = zone.building != -1 ? s_strings.getString("zone."+zone.building) : "";
 		String popDensityStr = s_strings.getString("status."+zone.popDensity);
 		String landValueStr = s_strings.getString("status."+zone.landValue);

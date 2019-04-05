@@ -90,7 +90,10 @@ public class Micropolis
 	/** For each 8x8 section of city, this is an integer between 0 and 64,
 	 * with higher numbers being closer to the center of the city. */
 	int [][] comRate;
-
+	
+	
+	
+	
 	static final int DEFAULT_WIDTH = 120;
 	static final int DEFAULT_HEIGHT = 100;
 
@@ -125,6 +128,10 @@ public class Micropolis
 	int nuclearCount;
 	int seaportCount;
 	int airportCount;
+	//count of leased lands
+	int leasedLandCount;
+	
+	HashMap<String, Integer> leasedLandToAmountLeft;
 
 	int totalPop;
 	int lastCityPop;
@@ -190,8 +197,21 @@ public class Micropolis
 	int scycle; //same as cityTime, except mod 1024
 	int fcycle; //counts simulation steps (mod 1024)
 	int acycle; //animation cycle (mod 960)
+	
+	
 
 	public CityEval evaluation;
+	
+	///Lease stuff
+	public int LeaseID;
+	
+	public HashMap<Integer, LeasedLandEntity> idToLLEntity;
+	
+	
+	int [][] leaseIDArr;
+	///
+	
+	
 
 	ArrayList<Sprite> sprites = new ArrayList<Sprite>();
 
@@ -213,6 +233,13 @@ public class Micropolis
 	public Micropolis(int width, int height)
 	{
 		PRNG = DEFAULT_PRNG;
+		
+		LeaseID = 0;
+		
+		idToLLEntity = new HashMap<>();
+		
+		leaseIDArr = new int[height][width];
+		
 		evaluation = new CityEval(this);
 		init(width, height);
 		initTileBehaviors();
@@ -231,6 +258,9 @@ public class Micropolis
 		crimeMem = new int[hY][hX];
 		popDensity = new int[hY][hX];
 		trfDensity = new int[hY][hX];
+
+		
+		
 
 		int qX = (width+3)/4;
 		int qY = (height+3)/4;
@@ -538,6 +568,8 @@ public class Micropolis
 		nuclearCount = 0;
 		seaportCount = 0;
 		airportCount = 0;
+		leasedLandCount = 0;
+		
 		powerPlants.clear();
 
 		for (int y = 0; y < fireStMap.length; y++) {
@@ -1461,7 +1493,7 @@ public class Micropolis
 		bb.put("INDUSTRIAL", new MapScanner(this, MapScanner.B.INDUSTRIAL));
 		bb.put("COAL", new MapScanner(this, MapScanner.B.COAL));
 		bb.put("NUCLEAR", new MapScanner(this, MapScanner.B.NUCLEAR));
-		bb.put("NEW_BUILDING", new MapScanner(this, MapScanner.B.NEW_BUILDING));
+		bb.put("LEASED_LAND", new MapScanner(this, MapScanner.B.LEASED_LAND));
 		bb.put("FIRESTATION", new MapScanner(this, MapScanner.B.FIRESTATION));
 		bb.put("POLICESTATION", new MapScanner(this, MapScanner.B.POLICESTATION));
 		bb.put("STADIUM_EMPTY", new MapScanner(this, MapScanner.B.STADIUM_EMPTY));
@@ -2652,6 +2684,17 @@ public class Micropolis
 	{
 		ZoneStatus zs = new ZoneStatus();
 		zs.building = getDescriptionNumber(getTile(xpos, ypos));
+		
+		if(zs.building == 28) {
+			
+			int id = this.leaseIDArr[ypos][xpos];
+			
+			zs.LeaseID = id;
+			
+			zs.Loan = this.idToLLEntity.get(id).amountLeft;
+			return zs;
+			
+		}
 
 		int z;
 		z = (popDensity[ypos/2][xpos/2] / 64) % 4;

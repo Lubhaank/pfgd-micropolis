@@ -42,7 +42,7 @@ class MapScanner extends TileBehavior
 		STADIUM_FULL,
 		AIRPORT,
 		SEAPORT,
-		NEW_BUILDING; //Placeholder enum for new building. Change to building name if making a new building
+		LEASED_LAND; //Placeholder enum for new building. Change to building name if making a new building
 	}
 
 	@Override
@@ -85,8 +85,8 @@ class MapScanner extends TileBehavior
 		case SEAPORT:
 			doSeaport();
 			return;
-		case NEW_BUILDING:
-			doNewBuilding(); //Call the NEW_BUILDING placeholder function
+		case LEASED_LAND:
+			doLeasedLand(); //Call the NEW_BUILDING placeholder function
 			return;
 		default:
 			assert false;
@@ -217,6 +217,24 @@ class MapScanner extends TileBehavior
 		if ((city.cityTime % 8) == 0) {
 			repairZone(NEW_BUILDING, 3);
 		}
+	}
+	
+	void doLeasedLand() 
+	{
+		
+		boolean powerOn = checkZonePower();
+		city.leasedLandCount++;
+		//cause pollution
+		if(powerOn) {
+			
+			//allow to make payments
+			
+		}
+		
+		
+		
+		
+		
 	}
 
 	void doFireStation()
