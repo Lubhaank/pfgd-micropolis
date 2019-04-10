@@ -131,7 +131,7 @@ public class Micropolis
 	//count of leased lands
 	int leasedLandCount;
 	
-	HashMap<String, Integer> leasedLandToAmountLeft;
+	
 
 	int totalPop;
 	int lastCityPop;
@@ -2678,6 +2678,29 @@ public class Micropolis
 	void sendMessageAt(MicropolisMessage message, int x, int y)
 	{
 		fireCityMessage(message, new CityLocation(x,y));
+	}
+	
+	public PayStatus getPayStatus(int xpos, int ypos) {
+		
+		PayStatus ps = new PayStatus();
+		
+		if(getDescriptionNumber(getTile(xpos, ypos)) != 28) {
+			
+			
+			ps.LeaseID = -1;
+			ps.Loan = -1;
+		}
+		else {
+			
+			int id = this.leaseIDArr[ypos][xpos];
+			
+			ps.LeaseID = id;
+			
+			ps.Loan = this.idToLLEntity.get(id).amountLeft;
+			
+		}
+		
+		return ps;
 	}
 
 	public ZoneStatus queryZoneStatus(int xpos, int ypos)

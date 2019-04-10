@@ -8,6 +8,8 @@
 
 package micropolisj.gui;
 
+import static micropolisj.engine.TileConstants.getDescriptionNumber;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -80,6 +82,8 @@ public class MainWindow extends JFrame
 
 		makeMenu();
 		JToolBar tb = makeToolbar();
+		
+		
 		mainArea.add(tb, BorderLayout.WEST);
 
 		Box evalGraphsBox = new Box(BoxLayout.Y_AXIS);
@@ -207,10 +211,61 @@ public class MainWindow extends JFrame
 			}
 			});
 
+		
+		MouseAdapter mouseNot = new MouseAdapter() {
+			
+			public void mousePressed(MouseEvent ev) {
+				
+				reloadFunds();
+			}
+			
+			public void mouseReleased(MouseEvent ev) {
+				
+				reloadFunds();
+			}
+			
+			public void mouseDragged(MouseEvent ev) {
+				
+				reloadFunds();
+			}
+			
+			public void mouseMoved(MouseEvent ev) {
+				
+				reloadFunds();
+			}
+			
+			public void mouseExited(MouseEvent ev)
+			{
+				
+				reloadFunds();
+			}
+			
+			public void mouseWheelMoved(MouseWheelEvent evt)
+			{
+				
+				reloadFunds();
+			}
+			
+			};
+		
+			notificationPane.addMouseListener(mouseNot);
+			notificationPane.addMouseMotionListener(mouseNot);
+			notificationPane.addMouseWheelListener(mouseNot);
+			
+			tb.addMouseListener(mouseNot);
+			tb.addMouseMotionListener(mouseNot);
+			tb.addMouseWheelListener(mouseNot);
+			
+		
+		
 		MouseAdapter mouse = new MouseAdapter() {
+			
+			
 			public void mousePressed(MouseEvent ev)
 			{
+				reloadFunds();
 				try {
+					
 					onToolDown(ev);
 				} catch (Throwable e) {
 					showErrorMessage(e);
@@ -218,6 +273,7 @@ public class MainWindow extends JFrame
 			}
 			public void mouseReleased(MouseEvent ev)
 			{
+				reloadFunds();
 				try {
 					onToolUp(ev);
 				} catch (Throwable e) {
@@ -226,6 +282,7 @@ public class MainWindow extends JFrame
 			}
 			public void mouseDragged(MouseEvent ev)
 			{
+				reloadFunds();
 				try {
 					onToolDrag(ev);
 				} catch (Throwable e) {
@@ -234,6 +291,7 @@ public class MainWindow extends JFrame
 			}
 			public void mouseMoved(MouseEvent ev)
 			{
+				reloadFunds();
 				try {
 					onToolHover(ev);
 				} catch (Throwable e) {
@@ -242,6 +300,7 @@ public class MainWindow extends JFrame
 			}
 			public void mouseExited(MouseEvent ev)
 			{
+				reloadFunds();
 				try {
 					onToolExited(ev);
 				} catch (Throwable e) {
@@ -250,6 +309,7 @@ public class MainWindow extends JFrame
 			}
 			public void mouseWheelMoved(MouseWheelEvent evt)
 			{
+				reloadFunds();
 				try {
 					onMouseWheelMoved(evt);
 				} catch (Throwable e) {
@@ -260,7 +320,10 @@ public class MainWindow extends JFrame
 		drawingArea.addMouseListener(mouse);
 		drawingArea.addMouseMotionListener(mouse);
 		drawingArea.addMouseWheelListener(mouse);
-
+		
+		
+		
+		
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent ev)
 			{
@@ -1052,6 +1115,11 @@ public class MainWindow extends JFrame
 		Box b7 = new Box(BoxLayout.X_AXIS);
 		gridBox.add(b7,c);
 		b7.add(makeToolBtn(MicropolisTool.LEASED_LAND));
+		
+		c.gridy++;
+		Box b8 = new Box(BoxLayout.X_AXIS);
+		gridBox.add(b8,c);
+		b8.add(makeToolBtn(MicropolisTool.PAY));
 
 		// add glue to make all elements align toward top
 		c.gridy++;
@@ -1113,6 +1181,33 @@ public class MainWindow extends JFrame
 		ZoneStatus z = engine.queryZoneStatus(xpos, ypos);
 		notificationPane.showZoneStatus(engine, xpos, ypos, z);
 	}
+	
+	void doPayTool(int xpos, int ypos)
+	{
+		
+		int c = engine.getTile(xpos, ypos);
+		
+		int building;
+		
+		TileSpec ts = Tiles.get(c);
+		if (ts != null) {
+			building = ts.getDescriptionNumber();
+		}
+		else {
+			building = -1;
+		}
+		
+		if (!engine.testBounds(xpos, ypos) || building != 28)
+			return;
+
+		PayStatus p = engine.getPayStatus(xpos, ypos);
+		
+		notificationPane.showPayStatus(engine, xpos, ypos, p);
+		
+		reloadFunds();
+	}
+	
+	
 
 	private void doZoom(int dir, Point mousePt)
 	{
@@ -1163,6 +1258,11 @@ public class MainWindow extends JFrame
 
 	private void onToolDown(MouseEvent ev)
 	{
+
+
+		
+		reloadFunds();
+		
 		if (ev.getButton() == MouseEvent.BUTTON3) {
 			CityLocation loc = drawingArea.getCityLocation(ev.getX(), ev.getY());
 			doQueryTool(loc.x, loc.y);
@@ -1188,6 +1288,12 @@ public class MainWindow extends JFrame
 			doQueryTool(x, y);
 			this.toolStroke = null;
 		}
+		
+		else if(currentTool == MicropolisTool.PAY) {
+			
+			doPayTool(x,y);
+			this.toolStroke = null;
+		}
 		else {
 			this.toolStroke = currentTool.beginStroke(engine, x, y);
 			previewTool();
@@ -1195,12 +1301,8 @@ public class MainWindow extends JFrame
 				
 				int cur = engine.LeaseID;
 				
-				LeasedLandEntity l = new LeasedLandEntity(cur, 10000, engine, x,y);
+				notificationPane.askLoanAmount(cur, engine, x, y);
 				
-				for(int id: engine.idToLLEntity.keySet()) {
-					
-					System.out.println(engine.idToLLEntity.get(id).toString());
-				}
 				
 			}
 		}
@@ -1226,6 +1328,9 @@ public class MainWindow extends JFrame
 
 	private void onToolUp(MouseEvent ev)
 	{
+		
+		reloadFunds();
+		
 		if (toolStroke != null) {
 			drawingArea.setToolPreview(null);
 
@@ -1259,6 +1364,10 @@ public class MainWindow extends JFrame
 
 	private void onToolDrag(MouseEvent ev)
 	{
+		
+		reloadFunds();
+		
+		
 		if (currentTool == null)
 			return;
 		if ((ev.getModifiersEx() & MouseEvent.BUTTON1_DOWN_MASK) == 0)
@@ -1277,6 +1386,9 @@ public class MainWindow extends JFrame
 		else if (currentTool == MicropolisTool.QUERY) {
 			doQueryTool(x, y);
 		}
+		else if (currentTool == MicropolisTool.PAY) {
+			doPayTool(x, y);
+		}
 
 		lastX = x;
 		lastY = y;
@@ -1284,6 +1396,7 @@ public class MainWindow extends JFrame
 
 	private void onToolHover(MouseEvent ev)
 	{
+		reloadFunds();
 		if (currentTool == null || currentTool == MicropolisTool.QUERY)
 		{
 			drawingArea.setToolCursor(null);

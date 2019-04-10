@@ -57,6 +57,8 @@ public class LeasedLandEntity {
 		
 		engine.budget.totalFunds -= pay;
 		
+		
+		
 		if( amountLeft == 0) {
 			
 			this.bulldozable = true;
@@ -77,5 +79,11 @@ public class LeasedLandEntity {
 		return "Id: " + this.id + " Amount :" + this.amountLeft + " x " + x + " y " + y; 
 		
 		
+	}
+	
+	public int getAmountLeft() {
+		
+		
+		return this.amountLeft;
 	}
 }

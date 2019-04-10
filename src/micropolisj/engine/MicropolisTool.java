@@ -31,7 +31,8 @@ public enum MicropolisTool
 	AIRPORT(6, 10000),
 	//NEW_BUILDING(3, 100), //Placeholder for a new tool. 
 	LEASED_LAND(8,0),
-	QUERY(1, 0);
+	QUERY(1, 0),
+	PAY(1,0);
 
 	int size;
 	int cost;

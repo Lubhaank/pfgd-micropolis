@@ -23,6 +23,7 @@ public class NotificationPane extends JPanel
 	MicropolisDrawingArea mapView;
 	JPanel mainPane;
 	JComponent infoPane;
+	
 
 	static final Dimension VIEWPORT_SIZE = new Dimension(160,160);
 	static final Color QUERY_COLOR = new Color(255,165,0);
@@ -73,6 +74,8 @@ public class NotificationPane extends JPanel
 	{
 		setVisible(false);
 	}
+	
+	
 
 	void setPicture(Micropolis engine, int xpos, int ypos)
 	{
@@ -107,6 +110,202 @@ public class NotificationPane extends JPanel
 		mainPane.add(myLabel, BorderLayout.CENTER);
 
 		setVisible(true);
+	}
+	
+	public void askLoanAmount(int cur, Micropolis engine, int x, int y) {
+		
+		
+		String buildingStr = "LEASED LAND";
+		
+		if (infoPane != null) {
+			mainPane.remove(infoPane);
+			infoPane = null;
+		}
+
+		JPanel p = new JPanel(new GridBagLayout());
+		mainPane.add(p, BorderLayout.CENTER);
+		infoPane = p;
+
+		GridBagConstraints c1 = new GridBagConstraints();
+		GridBagConstraints c2 = new GridBagConstraints();
+
+		c1.gridx = 0;
+		c2.gridx = 1;
+		c1.gridy = c2.gridy = 0;
+		c1.anchor = GridBagConstraints.WEST;
+		c2.anchor = GridBagConstraints.WEST;
+		c1.insets = new Insets(0,0,0,8);
+		c2.weightx = 1.0;
+		
+		
+		p.add(new JLabel(strings.getString("notification.zone_lbl")), c1);
+		p.add(new JLabel(buildingStr), c2);
+		
+		c1.gridy = ++c2.gridy;
+		
+		p.add(new JLabel("Enter Amount"), c1);
+		p.add(new JLabel("of Loan"), c2);
+		
+		JTextField textField = new JTextField(8);
+		JButton calculate = new JButton("Loan");
+		
+		calculate.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent evt) {
+				
+				String txt = textField.getText();
+				
+				if(!isNumeric(txt)) {
+					
+					textField.setText("");
+					
+					
+				}
+				
+				else {
+					
+					int val = Integer.parseInt(txt);
+					
+					
+					LeasedLandEntity l = new LeasedLandEntity(cur, val, engine, x,y);
+					textField.setText("");
+					
+					setVisible(false);
+					
+					
+					
+				}
+				
+				
+			}});
+		
+		c1.gridy = ++c2.gridy;
+		p.add(textField);
+		p.add(calculate);
+		
+		c1.gridy++;
+		c1.gridwidth = 2;
+		c1.weighty = 1.0;
+		
+		p.add(new JLabel(), c1);
+		
+		setVisible(true);
+		
+		return;
+		
+		
+		
+		
+		
+		
+		
+	}
+	
+	private boolean isNumeric(String str) {
+		
+		return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+	}
+	
+	public void showPayStatus(Micropolis engine, int xpos, int ypos, PayStatus ps) {
+		
+		String buildingStr = "LEASED LAND";
+		
+		String IdStr = ""+ps.LeaseID;
+		
+		String LoanStr = ""+ps.Loan;
+		
+		
+		setPicture(engine, xpos, ypos);
+
+		if (infoPane != null) {
+			mainPane.remove(infoPane);
+			infoPane = null;
+		}
+
+		JPanel p = new JPanel(new GridBagLayout());
+		mainPane.add(p, BorderLayout.CENTER);
+		infoPane = p;
+
+		GridBagConstraints c1 = new GridBagConstraints();
+		GridBagConstraints c2 = new GridBagConstraints();
+
+		c1.gridx = 0;
+		c2.gridx = 1;
+		c1.gridy = c2.gridy = 0;
+		c1.anchor = GridBagConstraints.WEST;
+		c2.anchor = GridBagConstraints.WEST;
+		c1.insets = new Insets(0,0,0,8);
+		c2.weightx = 1.0;
+
+		p.add(new JLabel(strings.getString("notification.zone_lbl")), c1);
+		p.add(new JLabel(buildingStr), c2);
+		
+		
+		
+		
+		c1.gridy = ++c2.gridy;
+		
+		p.add(new JLabel("Id of Lease:"), c1);
+		p.add(new JLabel(IdStr), c2);
+		
+		
+		JLabel loanLabel = new JLabel(LoanStr);
+		c1.gridy = ++c2.gridy;
+		p.add(new JLabel("Loan left to pay:"), c1);
+		p.add(loanLabel, c2);
+		
+		
+		JTextField textField = new JTextField(8);
+		JButton calculate = new JButton("Pay");
+		
+		
+		
+		calculate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				
+				String txt = textField.getText();
+				
+				if(!isNumeric(txt)) {
+					
+					textField.setText("");
+					
+					
+				}
+				
+				else {
+					
+					int val = Integer.parseInt(txt);
+					LeasedLandEntity lle = engine.idToLLEntity.get(ps.LeaseID);
+					
+					boolean check = lle.pay(engine, val);
+					
+					loanLabel.setText(""+lle.getAmountLeft());
+					
+					textField.setText("");
+					
+					
+					
+				}
+				
+				
+			}});
+		
+		c1.gridy = ++c2.gridy;
+		p.add(textField);
+		p.add(calculate);
+		
+		c1.gridy++;
+		c1.gridwidth = 2;
+		c1.weighty = 1.0;
+		
+		p.add(new JLabel(), c1);
+		
+
+		setVisible(true);
+		
+		return;
+		
+		
 	}
 
 	public void showZoneStatus(Micropolis engine, int xpos, int ypos, ZoneStatus zone)
@@ -164,6 +363,8 @@ public class NotificationPane extends JPanel
 			p.add(new JLabel("Loan left to pay:"), c1);
 			p.add(new JLabel(LoanStr), c2);
 			
+			
+						
 			c1.gridy++;
 			c1.gridwidth = 2;
 			c1.weighty = 1.0;
