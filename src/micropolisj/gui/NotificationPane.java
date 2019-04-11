@@ -11,6 +11,8 @@ package micropolisj.gui;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+
 import javax.swing.*;
 
 import micropolisj.engine.*;
@@ -208,6 +210,9 @@ public class NotificationPane extends JPanel
 	
 	public void showPayStatus(Micropolis engine, int xpos, int ypos, PayStatus ps) {
 		
+		
+		
+		
 		String buildingStr = "LEASED LAND";
 		
 		String IdStr = ""+ps.LeaseID;
@@ -272,6 +277,7 @@ public class NotificationPane extends JPanel
 					
 				}
 				
+				
 				else {
 					
 					int val = Integer.parseInt(txt);
@@ -289,6 +295,10 @@ public class NotificationPane extends JPanel
 				
 				
 			}});
+		
+		
+		headerLbl.setText(strings.getString("notification.query_hdr"));
+		headerLbl.setBackground(QUERY_COLOR);
 		
 		c1.gridy = ++c2.gridy;
 		p.add(textField);

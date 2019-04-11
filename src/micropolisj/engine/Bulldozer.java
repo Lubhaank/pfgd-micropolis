@@ -27,8 +27,10 @@ class Bulldozer extends ToolStroke
 			for (int x = 0; x < b.width; x++) {
 
 				ToolEffectIfc subEff = new TranslatedToolEffect(eff, b.x+x, b.y+y);
-				if (city.isTileDozeable(subEff)) {
 
+				
+				if(city.isTileDozeable(x,y)) {
+					
 					dozeField(subEff);
 				}
 

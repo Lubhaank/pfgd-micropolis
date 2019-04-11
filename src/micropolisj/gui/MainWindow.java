@@ -33,7 +33,7 @@ public class MainWindow extends JFrame
 	MicropolisDrawingArea drawingArea;
 	JScrollPane drawingAreaScroll;
 	DemandIndicator demandInd;
-	MessagesPane messagesPane;
+	public MessagesPane messagesPane;
 	JLabel mapLegendLbl;
 	OverlayMapView mapView;
 	NotificationPane notificationPane;
@@ -1202,8 +1202,13 @@ public class MainWindow extends JFrame
 
 		PayStatus p = engine.getPayStatus(xpos, ypos);
 		
-		notificationPane.showPayStatus(engine, xpos, ypos, p);
-		
+		if(!engine.idToLLEntity.get(p.LeaseID).powered) {
+			
+			messagesPane.appendMessageText("Need to power leased land inorder to pay back!");
+		}
+		else {
+			notificationPane.showPayStatus(engine, xpos, ypos, p);
+		}
 		reloadFunds();
 	}
 	

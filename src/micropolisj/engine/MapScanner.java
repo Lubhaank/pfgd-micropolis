@@ -210,14 +210,7 @@ class MapScanner extends TileBehavior
 	
 	//Placeholder for a new building
 	//Look to the other do<building name>() functions to guidance on what this function should do.
-	void doNewBuilding()
-	{
-		//Very basic building functionality. Checks for power and does "repair"
-		boolean powerOn = checkZonePower();
-		if ((city.cityTime % 8) == 0) {
-			repairZone(NEW_BUILDING, 3);
-		}
-	}
+	
 	
 	void doLeasedLand() 
 	{
@@ -227,10 +220,32 @@ class MapScanner extends TileBehavior
 		//cause pollution
 		if(powerOn) {
 			
-			//allow to make payments
+			
+			
+			int id = city.leaseIDArr[ypos][xpos];
+			
+			if(city.idToLLEntity.containsKey(id)) {
+				
+				city.idToLLEntity.get(id).powered = true;
+				
+			}
+			
+			
+			
 			
 		}
-		
+		else {
+			
+			int id = city.leaseIDArr[ypos][xpos];
+			
+			if(city.idToLLEntity.containsKey(id)) {
+				
+				city.idToLLEntity.get(id).powered = false;
+				
+			}
+			
+			
+		}
 		
 		
 		

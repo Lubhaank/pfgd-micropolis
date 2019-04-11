@@ -59,6 +59,7 @@ public enum MicropolisMessage
 	MELTDOWN_REPORT,        // 43            doMeltdown
 	RIOTING_REPORT,
 
+	
 	// added by Jason
 	NO_NUCLEAR_PLANTS;
 

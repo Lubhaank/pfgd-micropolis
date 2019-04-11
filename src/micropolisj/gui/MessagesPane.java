@@ -28,7 +28,7 @@ public class MessagesPane extends JTextPane
 		appendMessageText(cityMessageStrings.getString(message.name()));
 	}
 
-	void appendMessageText(String messageText)
+	public void appendMessageText(String messageText)
 	{
 		try {
 			StyledDocument doc = getStyledDocument();

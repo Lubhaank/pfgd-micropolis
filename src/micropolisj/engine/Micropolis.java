@@ -470,6 +470,8 @@ public class Micropolis
 		if (ts.canBulldoze) {
 			return true;
 		}
+		
+		
 
 		if (ts.owner != null) {
 			// part of a zone; only bulldozeable if the owner tile is
@@ -484,6 +486,13 @@ public class Micropolis
 
 	boolean isTileDozeable(int xpos, int ypos)
 	{
+		int id = this.leaseIDArr[ypos][xpos];
+		
+		if(this.idToLLEntity.containsKey(id)) {
+			
+			return this.idToLLEntity.get(id).canBulldoze();
+		}
+		
 		return isTileDozeable(
 			new ToolEffect(this, xpos, ypos)
 			);

@@ -13,6 +13,10 @@ public class LeasedLandEntity {
 	
 	boolean bulldozable;
 	
+	public boolean powered;
+	
+	
+	
 	public LeasedLandEntity(int id, int amount,Micropolis engine, int x, int y) {
 		
 		
@@ -25,6 +29,9 @@ public class LeasedLandEntity {
 		this.x = x;
 		
 		this.y = y;
+		
+		this.powered = false;
+		
 		
 		
 		
@@ -48,6 +55,11 @@ public class LeasedLandEntity {
 	
 	public boolean pay(Micropolis engine, int pay) {
 		
+		if(!powered || this.bulldozable) {
+			
+			return false;
+		}
+		
 		
 		if(pay > engine.budget.totalFunds || pay > this.amountLeft) {
 			
@@ -59,11 +71,20 @@ public class LeasedLandEntity {
 		
 		
 		
+		
 		if( amountLeft == 0) {
 			
 			this.bulldozable = true;
+			
+			
 		}
 		
+		else {
+			
+			this.bulldozable = false;
+
+			
+		}
 		return true;
 		
 	}
